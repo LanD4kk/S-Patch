@@ -10,12 +10,6 @@
             <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Facility Overview</h2>
             <p class="text-slate-500 mt-1">Status monitor for campus infrastructure</p>
         </div>
-        <div class="flex gap-2">
-            <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 hover:bg-slate-50 transition-colors text-slate-700 dark:text-slate-300">
-                <span class="material-symbols-outlined text-sm">calendar_today</span>
-                Last 30 Days
-            </button>
-        </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -27,7 +21,6 @@
                 <p class="text-slate-500 text-sm font-bold tracking-wide mb-1">Total Complaints</p>
                 <div class="flex items-center gap-3">
                     <h3 class="text-4xl font-black text-slate-800 dark:text-white tracking-tight">1,284</h3>
-                    <span class="text-xs font-bold text-green-500 flex items-center bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-lg">+12.5%</span>
                 </div>
             </div>
         </div>
@@ -36,13 +29,10 @@
             <div class="absolute -right-6 -bottom-6 opacity-10 group-hover:opacity-20 transition-opacity">
                 <span class="material-symbols-outlined text-[140px] text-amber-500 select-none">verified_user</span>
             </div>
-            <div class="absolute top-6 right-6 w-3 h-3 bg-amber-400 rounded-full animate-ping"></div>
-            <div class="absolute top-6 right-6 w-3 h-3 bg-amber-500 rounded-full"></div>
             <div class="relative z-10">
                 <p class="text-slate-500 text-sm font-bold tracking-wide mb-1">Need Verification</p>
                 <div class="flex items-center gap-3">
                     <h3 class="text-4xl font-black text-slate-800 dark:text-white tracking-tight">42</h3>
-                    <span class="text-xs font-bold text-amber-500 flex items-center bg-amber-50 dark:bg-amber-900/30 px-2 py-1 rounded-lg">High Priority</span>
                 </div>
             </div>
         </div>
@@ -55,7 +45,6 @@
                 <p class="text-slate-500 text-sm font-bold tracking-wide mb-1">Resolved Cases</p>
                 <div class="flex items-center gap-3">
                     <h3 class="text-4xl font-black text-slate-800 dark:text-white tracking-tight">958</h3>
-                    <span class="text-xs font-bold text-emerald-500 flex items-center bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-lg">84% Efficiency</span>
                 </div>
             </div>
         </div>
@@ -68,7 +57,6 @@
                 <p class="text-slate-500 text-sm font-bold tracking-wide mb-1">Active Staff</p>
                 <div class="flex items-center gap-3">
                     <h3 class="text-4xl font-black text-slate-800 dark:text-white tracking-tight">18</h3>
-                    <span class="text-xs font-bold text-slate-400 flex items-center bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">On Duty</span>
                 </div>
             </div>
         </div>

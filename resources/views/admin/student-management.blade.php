@@ -3,6 +3,13 @@
 @section('title', 'Admin - Manajemen Siswa | SMKN 4 Tangerang')
 
 @section('content')
+<!-- Page Title Section -->
+<div class="mb-6">
+    <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Student Management</h2>
+    <p class="text-slate-500 mt-1">Manage student data and information</p>
+</div>
+
+<!-- Search, Filter, and Add Button Section -->
 <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
     <div class="flex items-center gap-3 w-full md:max-w-2xl">
         <div class="relative flex-1">

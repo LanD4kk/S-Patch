@@ -37,3 +37,7 @@ Route::get('/admin/categories', function () {
 Route::get('/admin/aspirations', function () {
     return view('admin.aspiration-management');
 });
+
+Route::get('/hello', function () {
+    return 'Hello World! Environment Ready';
+});
