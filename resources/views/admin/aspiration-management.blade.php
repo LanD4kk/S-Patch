@@ -75,130 +75,63 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                <!-- Row 1 -->
+                @forelse($aspirations as $index => $aspiration)
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td class="px-6 py-5 text-center font-mono text-sm text-slate-500 dark:text-slate-400">01</td>
-                    <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">12 Okt 2023</td>
+                    <td class="px-6 py-5 text-center font-mono text-sm text-slate-500 dark:text-slate-400">{{ str_pad($aspirations->firstItem() + $index, 2, '0', STR_PAD_LEFT) }}</td>
+                    <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">{{ $aspiration->created_at->format('d M Y') }}</td>
                     <td class="px-6 py-5">
                         <div class="flex flex-col">
-                            <span class="text-sm font-bold">Andi Setiawan</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">NIS: 21221001</span>
+                            <span class="text-sm font-bold">{{ $aspiration->user->full_name }}</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">NIS/NIP: {{ $aspiration->user->identity_number }}</span>
                         </div>
                     </td>
                     <td class="px-6 py-5">
-                        <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full text-xs font-semibold">Fasilitas</span>
+                        <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full text-xs font-semibold">{{ $aspiration->category->category_name }}</span>
                     </td>
                     <td class="px-6 py-5 min-w-[300px]">
-                        <p class="text-sm line-clamp-2 text-slate-600 dark:text-slate-300 leading-relaxed">Kerusakan AC di ruang kelas XI RPL 2 sudah berlangsung selama satu minggu...</p>
+                        <p class="text-sm line-clamp-2 text-slate-600 dark:text-slate-300 leading-relaxed">{{ $aspiration->description }}</p>
                     </td>
                     <td class="px-6 py-5">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-500">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-2"></span>
-                            Menunggu
-                        </span>
+                        @if($aspiration->status == 'Pending')
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-2"></span>
+                                Menunggu
+                            </span>
+                        @elseif($aspiration->status == 'In Progress')
+                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mr-2"></span>
+                                Proses
+                            </span>
+                        @elseif($aspiration->status == 'Resolved')
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2"></span>
+                                Selesai
+                            </span>
+                        @else
+                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-2"></span>
+                                Ditolak
+                            </span>
+                        @endif
                     </td>
                     <td class="px-6 py-5 text-center">
                         <button class="text-blue-600 hover:underline text-sm font-bold">Detail</button>
                     </td>
                 </tr>
-                <!-- Row 2 -->
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td class="px-6 py-5 text-center font-mono text-sm text-slate-500 dark:text-slate-400">02</td>
-                    <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">10 Okt 2023</td>
-                    <td class="px-6 py-5">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold">Budi Santoso</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">NIS: 21221045</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-5">
-                        <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full text-xs font-semibold">Kebersihan</span>
-                    </td>
-                    <td class="px-6 py-5 min-w-[300px]">
-                        <p class="text-sm line-clamp-2 text-slate-600 dark:text-slate-300 leading-relaxed">Tempat sampah di area kantin sudah penuh dan beraroma tidak sedap sejak pagi.</p>
-                    </td>
-                    <td class="px-6 py-5">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mr-2"></span>
-                            Proses
-                        </span>
-                    </td>
-                    <td class="px-6 py-5 text-center">
-                        <button class="text-blue-600 hover:underline text-sm font-bold">Detail</button>
+                @empty
+                <tr>
+                    <td colspan="7" class="px-6 py-8 text-center text-slate-500">
+                        Belum ada laporan aspirasi.
                     </td>
                 </tr>
-                <!-- Row 3 -->
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td class="px-6 py-5 text-center font-mono text-sm text-slate-500 dark:text-slate-400">03</td>
-                    <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">08 Okt 2023</td>
-                    <td class="px-6 py-5">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold">Citra Lestari</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">NIS: 21221092</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-5">
-                        <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full text-xs font-semibold">Infrastruktur</span>
-                    </td>
-                    <td class="px-6 py-5 min-w-[300px]">
-                        <p class="text-sm line-clamp-2 text-slate-600 dark:text-slate-300 leading-relaxed">Genteng bocor di lorong perpustakaan, menyebabkan lantai licin saat hujan.</p>
-                    </td>
-                    <td class="px-6 py-5">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-500">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2"></span>
-                            Selesai
-                        </span>
-                    </td>
-                    <td class="px-6 py-5 text-center">
-                        <button class="text-blue-600 hover:underline text-sm font-bold">Detail</button>
-                    </td>
-                </tr>
-                <!-- Row 4 -->
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td class="px-6 py-5 text-center font-mono text-sm text-slate-500 dark:text-slate-400">04</td>
-                    <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">05 Okt 2023</td>
-                    <td class="px-6 py-5">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold">Dimas Pratama</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">NIS: 21221104</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-5">
-                        <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full text-xs font-semibold">Listrik</span>
-                    </td>
-                    <td class="px-6 py-5 min-w-[300px]">
-                        <p class="text-sm line-clamp-2 text-slate-600 dark:text-slate-300 leading-relaxed">Proyektor di lab komputer 3 sering mati sendiri saat digunakan mengajar.</p>
-                    </td>
-                    <td class="px-6 py-5">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-500">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2"></span>
-                            Selesai
-                        </span>
-                    </td>
-                    <td class="px-6 py-5 text-center">
-                        <button class="text-blue-600 hover:underline text-sm font-bold">Detail</button>
-                    </td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
     
     <!-- Pagination Footer -->
-    <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
-        <p class="text-sm text-slate-500 dark:text-slate-400">Menampilkan <span class="font-bold text-slate-900 dark:text-slate-200">1 - 4</span> dari <span class="font-bold text-slate-900 dark:text-slate-200">128</span> data</p>
-        <div class="flex items-center gap-1">
-            <button class="size-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled>
-                <span class="material-symbols-outlined text-sm">chevron_left</span>
-            </button>
-            <button class="size-9 flex items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-bold shadow-sm">1</button>
-            <button class="size-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm transition-colors">2</button>
-            <button class="size-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm transition-colors">3</button>
-            <span class="px-2 text-slate-400">...</span>
-            <button class="size-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm transition-colors">32</button>
-            <button class="size-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                <span class="material-symbols-outlined text-sm">chevron_right</span>
-            </button>
-        </div>
+    <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+        {{ $aspirations->links('pagination::tailwind') }}
     </div>
 </section>
 @endsection

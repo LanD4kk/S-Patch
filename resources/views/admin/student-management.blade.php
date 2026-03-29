@@ -47,96 +47,48 @@
                     <th class="px-6 py-4 text-center">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                <tr class="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors group">
-                    <td class="px-6 py-4 font-mono text-sm text-slate-600 dark:text-slate-400">12209001</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xs uppercase">AR</div>
-                            <span class="text-sm font-bold text-slate-900 dark:text-slate-100">Ahmad Rizki</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">XII RPL 1</span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">0812-3456-7890</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center justify-center gap-2">
-                            <button class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Hapus">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors group">
-                    <td class="px-6 py-4 font-mono text-sm text-slate-600 dark:text-slate-400">12209002</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 font-bold text-xs uppercase">BS</div>
-                            <span class="text-sm font-bold text-slate-900 dark:text-slate-100">Budi Santoso</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">X TKR 2</span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">0812-3456-7891</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center justify-center gap-2">
-                            <button class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Hapus">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors group">
-                    <td class="px-6 py-4 font-mono text-sm text-slate-600 dark:text-slate-400">12209003</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="size-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase">CK</div>
-                            <span class="text-sm font-bold text-slate-900 dark:text-slate-100">Citra Kirana</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">XI TKJ 1</span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">0812-3456-7892</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center justify-center gap-2">
-                            <button class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Hapus">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    @forelse($students as $student)
+                    <tr class="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors group">
+                        <td class="px-6 py-4 font-mono text-sm text-slate-600 dark:text-slate-400">{{ $student->identity_number }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                @php
+                                    $names = explode(' ', $student->full_name);
+                                    $initials = strtoupper(substr($names[0] ?? 'A', 0, 1) . substr($names[1] ?? '', 0, 1));
+                                @endphp
+                                <div class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xs uppercase">{{ $initials }}</div>
+                                <span class="text-sm font-bold text-slate-900 dark:text-slate-100">{{ $student->full_name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">{{ $student->class_name ?? '-' }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ $student->phone_number ?? '-' }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <button class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </button>
+                                <button class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Hapus">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+                            Belum ada data siswa.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
         </table>
     </div>
     
-    <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/30 flex items-center justify-between border-t border-slate-200 dark:border-slate-800">
-        <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Menampilkan <span class="text-slate-900 dark:text-slate-200 font-bold">3</span> dari <span class="text-slate-900 dark:text-slate-200 font-bold">150</span> siswa
-        </p>
-        <div class="flex items-center gap-1">
-            <button class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed" disabled>
-                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-            </button>
-            <button class="size-8 flex items-center justify-center rounded bg-blue-600 text-white text-xs font-bold shadow-sm">1</button>
-            <button class="size-8 flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 text-xs font-bold">2</button>
-            <button class="size-8 flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 text-xs font-bold">3</button>
-            <span class="px-1 text-slate-400">...</span>
-            <button class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700">
-                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-            </button>
-        </div>
+    <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-200 dark:border-slate-800">
+        {{ $students->links('pagination::tailwind') }}
     </div>
 </div>
 @endsection

@@ -31,8 +31,11 @@
 </nav>
 
 <div class="p-4 mt-auto">
-    <a href="/" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold text-sm transition-colors">
-        <span class="material-symbols-outlined text-[20px]">logout</span>
-        <span>Logout</span>
-    </a>
+    <form method="POST" action="{{ route('logout') }}" class="w-full">
+        @csrf
+        <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold text-sm transition-colors cursor-pointer outline-none">
+            <span class="material-symbols-outlined text-[20px]">logout</span>
+            <span>Logout</span>
+        </button>
+    </form>
 </div>

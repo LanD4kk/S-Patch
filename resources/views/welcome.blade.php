@@ -47,7 +47,6 @@
 
             <nav class="hidden md:flex items-center gap-10">
                 <a class="text-[#0d121b] text-sm font-semibold hover:text-primary transition-colors" href="#flow">Flow</a>
-                <a class="text-[#0d121b] text-sm font-semibold hover:text-primary transition-colors" href="#faq">FAQ</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -84,10 +83,6 @@
                             <span class="material-symbols-outlined text-2xl">campaign</span>
                             <span>LAPORKAN SEKARANG</span>
                         </button>
-                        <button class="flex items-center justify-center gap-2 min-w-[220px] rounded-2xl h-16 px-8 bg-white border-2 border-slate-100 text-[#0d121b] text-lg font-bold hover:bg-slate-50 hover:border-slate-200 transition-all duration-300">
-                            <span class="material-symbols-outlined text-2xl">play_circle</span>
-                            <span>Lihat Panduan</span>
-                        </button>
                     </div>
 
                     <!-- Trusted Stats -->
@@ -100,25 +95,6 @@
                         <span>Dipercaya oleh 1,200+ Siswa & Guru</span>
                     </div>
                 </div>
-        </section>
-
-        <section class="px-6 lg:px-10 py-12">
-            <div class="bg-blue-50/50 rounded-3xl p-8 lg:p-12 text-center border border-blue-100">
-                <h3 class="text-xl font-bold mb-6 flex items-center justify-center gap-2 text-gray-900">
-                    <span class="material-symbols-outlined text-primary">search</span>
-                    Cek Status Laporan
-                </h3>
-                <div class="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400">confirmation_number</span>
-                        <input class="w-full h-14 pl-12 pr-4 rounded-xl border-none bg-white shadow-sm focus:ring-2 focus:ring-primary text-base text-gray-900 placeholder:text-gray-400" placeholder="Masukkan Kode Tiket Laporanmu..." type="text"/>
-                    </div>
-                    <button class="h-14 px-10 bg-primary text-white rounded-xl font-bold text-base hover:bg-blue-700 transition-colors shadow-lg shadow-primary/20">
-                        Cek Status
-                    </button>
-                </div>
-                <p class="mt-4 text-sm text-gray-500">Gunakan kode yang Anda terima saat mengirim laporan pertama kali.</p>
-            </div>
         </section>
 
         <section class="px-6 lg:px-10 py-20">
@@ -208,10 +184,6 @@
                     Copyright © 2026 • Layanan Pengaduan Sarana Sekolah
                 </div>
                 <div class="flex items-center gap-4">
-                    <a class="flex items-center gap-2 text-sm text-primary font-bold hover:underline" href="mailto:admin@smkn4tangerang.sch.id">
-                        <span class="material-symbols-outlined text-lg">mail</span>
-                        Kontak Admin
-                    </a>
                 </div>
             </div>
         </div>

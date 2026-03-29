@@ -41,10 +41,8 @@
         <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                        <span class="material-symbols-outlined">domain</span>
-                    </div>
-                    <h1 class="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white uppercase">SIPAS</h1>
+                    <!-- Logo Image -->
+                    <img src="/img/logo.png" alt="S-Patch Logo" class="h-10 w-auto object-contain" />
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="hidden md:flex flex-col items-end">
@@ -54,10 +52,13 @@
                     <div class="h-10 w-10 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center overflow-hidden">
                         <img alt="Ahmad Profile" src="https://ui-avatars.com/api/?name=Ahmad+Rizki&background=135bec&color=fff" class="w-full h-full object-cover"/>
                     </div>
-                    <a href="/" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-sm transition-colors">
-                        <span class="material-symbols-outlined text-[20px]">logout</span>
-                        <span class="hidden sm:inline">Logout</span>
-                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-sm transition-colors cursor-pointer outline-none">
+                            <span class="material-symbols-outlined text-[20px]">logout</span>
+                            <span class="hidden sm:inline">Logout</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -82,10 +83,6 @@
                         <span class="text-sm md:text-base">Kelas: XII RPL 1</span>
                     </div>
                 </div>
-                <button class="mt-8 flex items-center gap-2 bg-white text-primary px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-blue-50 transition-colors">
-                    Lihat Panduan Laporan
-                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
             </div>
         </div>
 
