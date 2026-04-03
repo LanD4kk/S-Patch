@@ -14,7 +14,7 @@
 </div>
 @endif
 
-@if($errors->any())
+@if($errors->any() && !old('form_type'))
 <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-start gap-3">
     <span class="material-symbols-outlined text-red-500">error</span>
     <div>
@@ -54,7 +54,7 @@
             </select>
         </div>
     </div>
-    <button class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-blue-600/20 whitespace-nowrap">
+    <button data-modal-target="addStudentModal" data-modal-toggle="addStudentModal" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-blue-600/20 whitespace-nowrap">
         <span class="material-symbols-outlined">person_add</span>
         Tambah Siswa Baru
     </button>
@@ -128,6 +128,7 @@
                                 <form action="{{ route('admin.students.update', $student->user_id) }}" method="POST" class="p-6">
                                     @csrf
                                     @method('PUT')
+                                    <input type="hidden" name="form_type" value="edit-{{ $student->user_id }}">
                                     <div class="space-y-5 mb-6 p-4">
                                         <div>
                                             <label class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">Nomor Identitas (NIS)</label>
@@ -139,27 +140,37 @@
                                         </div>
                                         <div>
                                             <label for="full_name" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">Nama Lengkap</label>
-                                            <input type="text" name="full_name" id="full_name" value="{{ $student->full_name }}" class="bg-white border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:border-slate-700 dark:placeholder-slate-500 dark:text-white shadow-sm transition-all" required>
+                                            <input type="text" name="full_name" id="full_name" value="{{ old('form_type') == 'edit-'.$student->user_id ? old('full_name', $student->full_name) : $student->full_name }}" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:text-white shadow-sm transition-all {{ old('form_type') == 'edit-'.$student->user_id && $errors->has('full_name') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}" required>
+                                            @if(old('form_type') == 'edit-'.$student->user_id)
+                                                @error('full_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                            @endif
                                         </div>
                                         <div class="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label for="class_name" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">Kelas</label>
                                                 <div class="relative">
-                                                    <select name="class_name" id="class_name" class="bg-white border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 pl-4 pr-10 appearance-none dark:bg-slate-900 dark:border-slate-700 dark:text-white shadow-sm transition-all cursor-pointer">
+                                                    @php $currentClass = old('form_type') == 'edit-'.$student->user_id ? old('class_name', $student->class_name) : $student->class_name; @endphp
+                                                    <select name="class_name" id="class_name" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 pl-4 pr-10 appearance-none dark:bg-slate-900 dark:text-white shadow-sm transition-all cursor-pointer {{ old('form_type') == 'edit-'.$student->user_id && $errors->has('class_name') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}">
                                                         <option value="">Pilih</option>
-                                                        <option value="XII RPL 1" {{ $student->class_name == 'XII RPL 1' ? 'selected' : '' }}>XII RPL 1</option>
-                                                        <option value="XII RPL 2" {{ $student->class_name == 'XII RPL 2' ? 'selected' : '' }}>XII RPL 2</option>
-                                                        <option value="XI TKJ 1" {{ $student->class_name == 'XI TKJ 1' ? 'selected' : '' }}>XI TKJ 1</option>
-                                                        <option value="XI TKJ 2" {{ $student->class_name == 'XI TKJ 2' ? 'selected' : '' }}>XI TKJ 2</option>
-                                                        <option value="X TKR 1" {{ $student->class_name == 'X TKR 1' ? 'selected' : '' }}>X TKR 1</option>
-                                                        <option value="X TKR 2" {{ $student->class_name == 'X TKR 2' ? 'selected' : '' }}>X TKR 2</option>
+                                                        <option value="XII RPL 1" {{ $currentClass == 'XII RPL 1' ? 'selected' : '' }}>XII RPL 1</option>
+                                                        <option value="XII RPL 2" {{ $currentClass == 'XII RPL 2' ? 'selected' : '' }}>XII RPL 2</option>
+                                                        <option value="XI TKJ 1" {{ $currentClass == 'XI TKJ 1' ? 'selected' : '' }}>XI TKJ 1</option>
+                                                        <option value="XI TKJ 2" {{ $currentClass == 'XI TKJ 2' ? 'selected' : '' }}>XI TKJ 2</option>
+                                                        <option value="X TKR 1" {{ $currentClass == 'X TKR 1' ? 'selected' : '' }}>X TKR 1</option>
+                                                        <option value="X TKR 2" {{ $currentClass == 'X TKR 2' ? 'selected' : '' }}>X TKR 2</option>
                                                     </select>
                                                     <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[20px]">expand_more</span>
                                                 </div>
+                                                @if(old('form_type') == 'edit-'.$student->user_id)
+                                                    @error('class_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                                @endif
                                             </div>
                                             <div>
                                                 <label for="phone_number" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">No. Telp / WA</label>
-                                                <input type="text" name="phone_number" id="phone_number" value="{{ $student->phone_number }}" class="bg-white border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:border-slate-700 dark:text-white shadow-sm transition-all placeholder-slate-300" placeholder="08...">
+                                                <input type="text" name="phone_number" id="phone_number" value="{{ old('form_type') == 'edit-'.$student->user_id ? old('phone_number', $student->phone_number) : $student->phone_number }}" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:text-white shadow-sm transition-all placeholder-slate-300 {{ old('form_type') == 'edit-'.$student->user_id && $errors->has('phone_number') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}" placeholder="08...">
+                                                @if(old('form_type') == 'edit-'.$student->user_id)
+                                                    @error('phone_number') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -219,4 +230,105 @@
         {{ $students->links('pagination::tailwind') }}
     </div>
 </div>
+
+<!-- Add Student Modal -->
+<div id="addStudentModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-2xl shadow-2xl dark:bg-slate-900 border border-slate-100 dark:border-slate-800 overflow-hidden transform transition-all">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                        <span class="material-symbols-outlined text-[20px]">person_add</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white leading-none">
+                            Tambah Siswa Baru
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">Tambahkan akun akses untuk siswa</p>
+                    </div>
+                </div>
+                <button type="button" class="text-slate-400 bg-transparent hover:bg-slate-200 hover:text-slate-900 rounded-xl text-sm w-8 h-8 flex justify-center items-center dark:hover:bg-slate-700 dark:hover:text-white transition-colors" data-modal-toggle="addStudentModal">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form action="{{ route('admin.students.store') }}" method="POST" class="p-6">
+                @csrf
+                <input type="hidden" name="form_type" value="add">
+                <div class="space-y-5 mb-6 p-4">
+                    <div>
+                        <label for="identity_number" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">Nomor Identitas (NIS)</label>
+                        <input type="text" name="identity_number" id="identity_number" value="{{ old('form_type') == 'add' ? old('identity_number') : '' }}" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:placeholder-slate-500 dark:text-white shadow-sm transition-all {{ old('form_type') == 'add' && $errors->has('identity_number') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}" required placeholder="Contoh: 101010">
+                        @if(old('form_type') == 'add')
+                            @error('identity_number') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        @endif
+                    </div>
+                    <div>
+                        <label for="full_name" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">Nama Lengkap</label>
+                        <input type="text" name="full_name" id="full_name" value="{{ old('form_type') == 'add' ? old('full_name') : '' }}" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:placeholder-slate-500 dark:text-white shadow-sm transition-all {{ old('form_type') == 'add' && $errors->has('full_name') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}" required placeholder="Nama Lengkap Siswa">
+                        @if(old('form_type') == 'add')
+                            @error('full_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        @endif
+                    </div>
+                    <div>
+                        <label for="password" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">Password</label>
+                        <input type="password" name="password" id="password" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:placeholder-slate-500 dark:text-white shadow-sm transition-all {{ old('form_type') == 'add' && $errors->has('password') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}" required placeholder="••••••••">
+                        @if(old('form_type') == 'add')
+                            @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        @endif
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="new_class_name" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">Kelas</label>
+                            <div class="relative">
+                                @php $addCurrentClass = old('form_type') == 'add' ? old('class_name') : ''; @endphp
+                                <select name="class_name" id="new_class_name" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 pl-4 pr-10 appearance-none dark:bg-slate-900 dark:text-white shadow-sm transition-all cursor-pointer {{ old('form_type') == 'add' && $errors->has('class_name') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}" required>
+                                    <option value="">Pilih</option>
+                                    <option value="XII RPL 1" {{ $addCurrentClass == 'XII RPL 1' ? 'selected' : '' }}>XII RPL 1</option>
+                                    <option value="XII RPL 2" {{ $addCurrentClass == 'XII RPL 2' ? 'selected' : '' }}>XII RPL 2</option>
+                                    <option value="XI TKJ 1" {{ $addCurrentClass == 'XI TKJ 1' ? 'selected' : '' }}>XI TKJ 1</option>
+                                    <option value="XI TKJ 2" {{ $addCurrentClass == 'XI TKJ 2' ? 'selected' : '' }}>XI TKJ 2</option>
+                                    <option value="X TKR 1" {{ $addCurrentClass == 'X TKR 1' ? 'selected' : '' }}>X TKR 1</option>
+                                    <option value="X TKR 2" {{ $addCurrentClass == 'X TKR 2' ? 'selected' : '' }}>X TKR 2</option>
+                                </select>
+                                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[20px]">expand_more</span>
+                            </div>
+                            @if(old('form_type') == 'add')
+                                @error('class_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                            @endif
+                        </div>
+                        <div>
+                            <label for="new_phone_number" class="block mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-300">No. Telp / WA</label>
+                            <input type="text" name="phone_number" id="new_phone_number" value="{{ old('form_type') == 'add' ? old('phone_number') : '' }}" class="bg-white border text-sm rounded-xl focus:ring-blue-600 focus:border-blue-600 block w-full py-2.5 px-4 dark:bg-slate-900 dark:text-white shadow-sm transition-all placeholder-slate-300 {{ old('form_type') == 'add' && $errors->has('phone_number') ? 'border-red-500 dark:border-red-500' : 'border-slate-200 dark:border-slate-700' }}" placeholder="08...">
+                            @if(old('form_type') == 'add')
+                                @error('phone_number') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <button type="submit" class="w-full text-white inline-flex justify-center items-center bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-600/30 font-bold rounded-xl text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98]">
+                        <span class="material-symbols-outlined mr-2 text-[20px]">add_circle</span>
+                        Tambahkan Akun
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            @if(old('form_type') === 'add')
+                const addBtn = document.querySelector('[data-modal-target="addStudentModal"]');
+                if(addBtn) addBtn.click();
+            @elseif(old('form_type') && strpos(old('form_type'), 'edit-') === 0)
+                const editBtn = document.querySelector(`[data-modal-target="editStudentModal-{{ str_replace('edit-', '', old('form_type')) }}"]`);
+                if(editBtn) editBtn.click();
+            @endif
+        }, 300); // Beri jeda 300ms agar script Flowbite selesai inisialisasi
+    });
+</script>
 @endsection

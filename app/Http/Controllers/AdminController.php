@@ -36,6 +36,28 @@ class AdminController extends Controller
         return view('admin.student-management', compact('students'));
     }
 
+    public function storeStudent(Request $request)
+    {
+        $request->validate([
+            'identity_number' => 'required|string|max:50|unique:users,identity_number',
+            'full_name' => 'required|string|max:100',
+            'class_name' => 'required|string|max:20',
+            'phone_number' => 'nullable|string|max:15',
+            'password' => 'required|string|min:6',
+        ]);
+
+        User::create([
+            'identity_number' => $request->identity_number,
+            'full_name' => $request->full_name,
+            'class_name' => $request->class_name,
+            'phone_number' => $request->phone_number,
+            'password' => bcrypt($request->password),
+            'role' => 'student',
+        ]);
+
+        return redirect()->back()->with('success', 'Akun siswa baru berhasil ditambahkan.');
+    }
+
     public function updateStudent(Request $request, $id)
     {
         $student = User::where('role', 'student')->findOrFail($id);
@@ -67,6 +89,47 @@ class AdminController extends Controller
     {
         $categories = Category::withCount('complaints')->paginate(10);
         return view('admin.category-management', compact('categories'));
+    }
+
+    public function storeCategory(Request $request)
+    {
+        $request->validate([
+            'category_name' => 'required|string|max:100|unique:categories,category_name',
+        ]);
+
+        Category::create([
+            'category_name' => $request->category_name,
+        ]);
+
+        return redirect()->back()->with('success', 'Kategori laporan berhasil ditambahkan.');
+    }
+
+    public function updateCategory(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'category_name' => 'required|string|max:100|unique:categories,category_name,' . $id . ',category_id',
+        ]);
+
+        $category->update([
+            'category_name' => $request->category_name,
+        ]);
+
+        return redirect()->back()->with('success', 'Kategori laporan berhasil diperbarui.');
+    }
+
+    public function destroyCategory($id)
+    {
+        $category = Category::findOrFail($id);
+
+        if ($category->complaints()->exists()) {
+            return redirect()->back()->withErrors(['Kategori ini tidak dapat dihapus karena masih menampung laporan pengaduan dari siswa.']);
+        }
+
+        $category->delete();
+
+        return redirect()->back()->with('success', 'Kategori laporan berhasil dihapus secara permanen.');
     }
 
     public function aspirations(Request $request)
