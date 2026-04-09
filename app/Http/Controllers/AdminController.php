@@ -32,46 +32,28 @@ class AdminController extends Controller
 
     public function accounts(Request $request)
     {
-        $queryStudent = User::where('role', 'student')->latest('user_id');
-        $queryStaff = User::where('role', 'staff')->latest('user_id');
-
-        if ($request->filled('class_name')) {
-            $queryStudent->where('class_name', $request->class_name);
-        }
+        $query = User::whereIn('role', ['student', 'staff'])->latest('user_id');
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $queryStudent->where(function($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('identity_number', 'like', "%{$search}%");
-            });
-            $queryStaff->where(function($q) use ($search) {
+            $query->where(function($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
                   ->orWhere('identity_number', 'like', "%{$search}%");
             });
         }
 
-        // Default tab to empty if not set, or retain based on request
-        // Paginators append requested query and use separate page names
-        $students = $queryStudent->paginate(10, ['*'], 'student_page')->withQueryString();
-        $staffs = $queryStaff->paginate(10, ['*'], 'staff_page')->withQueryString();
+        $users = $query->paginate(10)->withQueryString();
 
-        $classes = User::where('role', 'student')
-            ->whereNotNull('class_name')
-            ->where('class_name', '!=', '')
-            ->distinct()
-            ->orderBy('class_name')
-            ->pluck('class_name');
-
-        return view('admin.account-management', compact('students', 'staffs', 'classes'));
+        return view('admin.account-management', compact('users'));
     }
 
-    public function storeStudent(Request $request)
+    public function storeAccount(Request $request)
     {
         $request->validate([
+            'role' => 'required|in:student,staff',
             'identity_number' => 'required|string|max:50|unique:users,identity_number',
             'full_name' => 'required|string|max:100',
-            'class_name' => 'required|string|max:20',
+            'class_name' => 'required_if:role,student|nullable|string|max:20',
             'phone_number' => 'nullable|string|max:15',
             'password' => 'required|string|min:6',
         ]);
@@ -79,85 +61,42 @@ class AdminController extends Controller
         User::create([
             'identity_number' => $request->identity_number,
             'full_name' => $request->full_name,
-            'class_name' => $request->class_name,
+            'class_name' => $request->role === 'student' ? $request->class_name : null,
             'phone_number' => $request->phone_number,
             'password' => bcrypt($request->password),
-            'role' => 'student',
+            'role' => $request->role,
         ]);
 
-        return redirect()->back()->with('success', 'Akun siswa baru berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Akun berhasil ditambahkan.');
     }
 
-    public function updateStudent(Request $request, $id)
+    public function updateAccount(Request $request, $id)
     {
-        $student = User::where('role', 'student')->findOrFail($id);
+        $user = User::whereIn('role', ['student', 'staff'])->findOrFail($id);
 
         $request->validate([
+            'role' => 'required|in:student,staff',
             'full_name' => 'required|string|max:100',
-            'class_name' => 'nullable|string|max:20',
+            'class_name' => 'required_if:role,student|nullable|string|max:20',
             'phone_number' => 'nullable|string|max:15',
         ]);
 
-        $student->update([
+        $user->update([
+            'role' => $request->role,
             'full_name' => $request->full_name,
-            'class_name' => $request->class_name,
+            'class_name' => $request->role === 'student' ? $request->class_name : null,
             'phone_number' => $request->phone_number,
         ]);
 
-        return redirect()->back()->with('success', 'Data siswa berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Data akun berhasil diperbarui.');
     }
 
-    public function destroyStudent($id)
+    public function destroyAccount($id)
     {
-        $student = User::where('role', 'student')->findOrFail($id);
-        $student->delete();
+        $user = User::whereIn('role', ['student', 'staff'])->findOrFail($id);
+        $user->delete();
 
-        return redirect()->back()->with('success', 'Akun siswa beserta seluruh data laporannya berhasil dihapus secara permanen.');
-    }
-
-    public function storeStaff(Request $request)
-    {
-        $request->validate([
-            'identity_number' => 'required|string|max:50|unique:users,identity_number',
-            'full_name' => 'required|string|max:100',
-            'phone_number' => 'nullable|string|max:15',
-            'password' => 'required|string|min:6',
-        ]);
-
-        User::create([
-            'identity_number' => $request->identity_number,
-            'full_name' => $request->full_name,
-            'phone_number' => $request->phone_number,
-            'password' => bcrypt($request->password),
-            'role' => 'staff',
-        ]);
-
-        return redirect()->back()->with('success', 'Akun staff baru berhasil ditambahkan.');
-    }
-
-    public function updateStaff(Request $request, $id)
-    {
-        $staff = User::where('role', 'staff')->findOrFail($id);
-
-        $request->validate([
-            'full_name' => 'required|string|max:100',
-            'phone_number' => 'nullable|string|max:15',
-        ]);
-
-        $staff->update([
-            'full_name' => $request->full_name,
-            'phone_number' => $request->phone_number,
-        ]);
-
-        return redirect()->back()->with('success', 'Data staff berhasil diperbarui.');
-    }
-
-    public function destroyStaff($id)
-    {
-        $staff = User::where('role', 'staff')->findOrFail($id);
-        $staff->delete();
-
-        return redirect()->back()->with('success', 'Akun staff berhasil dihapus secara permanen.');
+        return redirect()->back()->with('success', 'Akun beserta seluruh datanya berhasil dihapus secara permanen.');
     }
 
     public function categories(Request $request)
@@ -243,10 +182,7 @@ class AdminController extends Controller
                   ->whereMonth('created_at', $month);
         }
 
-        // Filter: status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+
 
         $aspirations = $query->paginate(15)->withQueryString();
         $categories  = Category::orderBy('category_name')->get();
@@ -259,56 +195,6 @@ class AdminController extends Controller
         $aspiration = Complaint::with(['user', 'category', 'responses.user'])->findOrFail($id);
         
         return view('admin.aspiration-detail', compact('aspiration'));
-    }
-
-    public function historiAspirasi(Request $request)
-    {
-        $query = Complaint::with(['user', 'category'])
-            ->withCount('responses')
-            ->whereIn('status', ['Resolved', 'Rejected'])
-            ->latest('updated_at');
-
-        // Filter: bulan
-        if ($request->filled('month')) {
-            [$year, $month] = explode('-', $request->month);
-            $query->whereYear('updated_at', $year)
-                  ->whereMonth('updated_at', $month);
-        }
-
-        // Filter: tanggal mulai
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        // Filter: tanggal akhir
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        // Filter: kategori
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        // Filter: NIS / nama siswa
-        if ($request->filled('student')) {
-            $search = $request->student;
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('identity_number', 'like', "%$search%")
-                  ->orWhere('full_name', 'like', "%$search%");
-            });
-        }
-
-        $histories      = $query->paginate(15)->withQueryString();
-        $categories     = Category::orderBy('category_name')->get();
-        $totalResolved  = Complaint::where('status', 'Resolved')->count();
-        $totalRejected  = Complaint::where('status', 'Rejected')->count();
-        $totalResponses = \App\Models\Response::count();
-
-        return view('admin.histori-aspirasi', compact(
-            'histories', 'categories',
-            'totalResolved', 'totalRejected', 'totalResponses'
-        ));
     }
 
     public function updateAspiration(Request $request, $id)
