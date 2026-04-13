@@ -9,22 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
-    /**
-     * Tampilkan halaman dashboard siswa.
-     */
+    
     public function dashboard()
     {
         return view('student.dashboard');
     }
 
-    /**
-     * API: Ambil data ringkasan dashboard siswa yang sedang login.
-     */
+   
     public function apiDashboard()
     {
         $user = Auth::user();
 
-        // 1. Hitung stats keseluruhan (tidak mempedulikan filter)
         $allComplaints = Complaint::where('user_id', $user->user_id)->get();
         $total      = $allComplaints->count();
         $pending    = $allComplaints->where('status', 'Pending')->count();
@@ -32,7 +27,6 @@ class StudentController extends Controller
         $resolved   = $allComplaints->where('status', 'Resolved')->count();
         $rejected   = $allComplaints->where('status', 'Rejected')->count();
 
-        // 2. Query data riwayat
         $filteredComplaints = Complaint::with(['category', 'responses'])
             ->where('user_id', $user->user_id)
             ->latest()
@@ -68,9 +62,7 @@ class StudentController extends Controller
         ]);
     }
 
-    /**
-     * API: Ambil detail satu laporan milik siswa yang sedang login.
-     */
+    
     public function apiReportDetail($id)
     {
         $user = Auth::user();
@@ -112,18 +104,13 @@ class StudentController extends Controller
         ]);
     }
 
-    /**
-     * API: Ambil daftar kategori.
-     */
+    
     public function apiCategories()
     {
         $categories = Category::orderBy('category_name')->get(['category_id', 'category_name']);
         return response()->json($categories);
     }
 
-    /**
-     * API: Simpan laporan baru ke database.
-     */
     public function storeReport(Request $request)
     {
         $request->validate([
@@ -151,5 +138,46 @@ class StudentController extends Controller
             'message'      => 'Laporan berhasil dikirim.',
             'complaint_id' => $complaint->complaint_id,
         ], 201);
+    }
+
+    public function updateReport(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $complaint = Complaint::where('complaint_id', $id)
+            ->where('user_id', $user->user_id)
+            ->first();
+
+        if (!$complaint) {
+            return response()->json(['message' => 'Laporan tidak ditemukan.'], 404);
+        }
+
+        if ($complaint->status !== 'Pending') {
+            return response()->json(['message' => 'Laporan tidak dapat diedit karena status sudah diproses.'], 403);
+        }
+
+        $request->validate([
+            'category_id'   => 'required|exists:categories,category_id',
+            'title'         => 'required|string|max:255',
+            'description'   => 'required|string',
+            'evidence_photo'=> 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
+        $photoPath = $complaint->evidence_photo;
+        if ($request->hasFile('evidence_photo')) {
+            $photoPath = $request->file('evidence_photo')->store('complaints', 'public');
+        }
+
+        $complaint->update([
+            'category_id'   => $request->category_id,
+            'title'         => $request->title,
+            'description'   => $request->description,
+            'evidence_photo'=> $photoPath,
+        ]);
+
+        return response()->json([
+            'message'      => 'Laporan berhasil diperbarui.',
+            'complaint_id' => $complaint->complaint_id,
+        ], 200);
     }
 }

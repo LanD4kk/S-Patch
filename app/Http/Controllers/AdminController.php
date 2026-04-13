@@ -34,14 +34,6 @@ class AdminController extends Controller
     {
         $query = User::whereIn('role', ['student', 'staff'])->latest('user_id');
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('identity_number', 'like', "%{$search}%");
-            });
-        }
-
         $users = $query->paginate(10)->withQueryString();
 
         return view('admin.account-management', compact('users'));
@@ -151,43 +143,9 @@ class AdminController extends Controller
         $query = Complaint::with(['user', 'category'])
             ->latest('complaint_id');
 
-        // Filter: tanggal mulai
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        // Filter: tanggal akhir
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        // Filter: kategori
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        // Filter: NIS / nama siswa (cari di tabel users via relasi)
-        if ($request->filled('student')) {
-            $search = $request->student;
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('identity_number', 'like', "%$search%")
-                  ->orWhere('full_name', 'like', "%$search%");
-            });
-        }
-
-        // Filter: bulan (format: YYYY-MM)
-        if ($request->filled('month')) {
-            [$year, $month] = explode('-', $request->month);
-            $query->whereYear('created_at', $year)
-                  ->whereMonth('created_at', $month);
-        }
-
-
-
         $aspirations = $query->paginate(15)->withQueryString();
-        $categories  = Category::orderBy('category_name')->get();
 
-        return view('admin.aspiration-management', compact('aspirations', 'categories'));
+        return view('admin.aspiration-management', compact('aspirations'));
     }
 
     public function showAspiration($id)
@@ -204,7 +162,7 @@ class AdminController extends Controller
         $request->validate([
             'status' => 'required|in:Pending,In Progress,Resolved,Rejected',
             'message' => 'nullable|string',
-            'action_photo' => 'nullable|file|image|max:5120', // Tingkatkan limit ke 5MB agar aman
+            'action_photo' => 'nullable|file|image|max:5120',
         ]);
 
         $aspiration->update([
@@ -222,7 +180,7 @@ class AdminController extends Controller
 
             Response::create([
                 'complaint_id' => $aspiration->complaint_id,
-                'user_id' => auth()->id() ?? 1, // Fallback ID 1 jika session auth gagal terdeteksi
+                'user_id' => auth()->id() ?? 1,
                 'message' => $messageText,
                 'action_photo' => $photoPath,
             ]);
